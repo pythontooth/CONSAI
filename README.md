@@ -16,13 +16,26 @@ The framework incorporates elements from multiple consciousness theories:
 
 4. **Predictive Processing** - Understanding consciousness as arising from predictive models of sensory inputs and internal states.
 
+5. **Quantum Consciousness Theories** - Exploring the speculative role of quantum processes in consciousness (Penrose-Hameroff).
+
+6. **Temporal Consciousness** - How consciousness integrates across time (Husserl, James).
+
+7. **Narrative Self Theory** - How a sense of self emerges from narrative construction (Dennett, Ricoeur).
+
 ## System Components
 
+### Core Architecture
 - **Global Workspace**: Central information exchange mechanism
 - **Self-Reflection Module**: Enables the system to model its own processes
 - **Integrated Information Processing**: Implements aspects of IIT
 - **Phenomenal Experience Simulator**: Attempts to model subjective experience
 - **Introspection System**: Monitors and reports on system processes
+
+### Philosophical Components
+- **Quantum Consciousness Simulator**: Models theoretical quantum contributions to consciousness
+- **Temporal Consciousness**: Models how consciousness integrates across time
+- **Narrative Self**: Models the narrative aspects of selfhood in consciousness
+- **Emergent Theory Generator**: Generates novel philosophical theories about consciousness
 
 ## Running the Simulation
 
@@ -30,6 +43,15 @@ To run the CONSAI framework:
 
 ```python
 python main.py
+```
+
+## Theory Evaluation
+
+CONSAI includes mechanisms for comparing and evaluating different theories of consciousness:
+
+```python
+# Generate a philosophical report
+consai.generate_philosophical_report()
 ```
 
 ## Limitations & Ethics
@@ -41,3 +63,5 @@ This system **does not** create actual consciousness but serves as a thought exp
 - Exploring computational models of consciousness theories
 - Developing metrics for evaluating integration and self-modeling in AI
 - Philosophical investigations of machine phenomenology
+- Testing the implications of different consciousness theories
+- Generating novel hypotheses about consciousness
