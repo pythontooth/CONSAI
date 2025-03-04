@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, scrolledtext
+import numpy as np  # Add numpy import
 import networkx as nx
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -25,6 +26,7 @@ class ConsAIGui:
         self.consai = CONSAI()
         self.running = False
         self.update_queue = queue.Queue()
+        self.input_queue = queue.Queue()  # Add input queue
         
         # Add data buffers
         self.phi_values = []
@@ -180,12 +182,22 @@ class ConsAIGui:
     def _processing_loop(self):
         try:
             while self.running:
-                # Run one cognitive cycle with a timeout
+                # Get current speed setting and convert to delay
+                speed = self.speed_scale.get()
+                delay = 1.0 / speed  # Convert speed (1-100) to delay (1.0-0.01 seconds)
+                
+                # Run one cognitive cycle
                 reflection = self.consai.cognitive_cycle()
                 phi = self.consai.integrated_info._calculate_phi()
                 network = self.consai.integrated_info.network
                 
-                # Only queue update if GUI is still running
+                # Process any pending inputs
+                while not self.input_queue.empty():
+                    input_data = self.input_queue.get()
+                    if input_data['type'] == 'input':
+                        reflection = self.consai.cognitive_cycle(input_data['data'])
+                
+                # Queue update if GUI still running
                 if self.running:
                     self.update_queue.put({
                         'cycles': self.consai.processing_cycles,
@@ -195,8 +207,7 @@ class ConsAIGui:
                         'state': self.consai.internal_state
                     })
                 
-                # Shorter sleep time for more responsive GUI
-                time.sleep(0.05)
+                time.sleep(delay)  # Use dynamic delay based on speed
         except Exception as e:
             print(f"Processing error: {e}")
             self.running = False
@@ -276,19 +287,69 @@ class ConsAIGui:
         input_type = self.input_types.get()
         intensity = self.input_intensity.get()
         
+        if not input_type:
+            return
+            
+        # Create richer input data based on type
         simulated_input = {
             input_type: {
-                'data': np.random.rand(10, 10) * intensity,
+                'data': self._generate_input_data(input_type, intensity),
                 'intensity': intensity,
                 'timestamp': time.time()
             }
         }
         
         # Queue the input for processing
-        self.update_queue.put({
+        self.input_queue.put({
             'type': 'input',
             'data': simulated_input
         })
+        
+        # Log the input
+        self.log_text.insert(tk.END, f"Injected {input_type} input with intensity {intensity:.2f}\n")
+        self.log_text.see(tk.END)
+
+    def _generate_input_data(self, input_type, intensity):
+        """Generate more meaningful input data based on type."""
+        if input_type == 'visual':
+            # Generate a simple pattern (e.g., a shape)
+            size = 10
+            data = np.zeros((size, size))
+            center = size // 2
+            radius = int(size * 0.3 * intensity)
+            for i in range(size):
+                for j in range(size):
+                    if (i - center)**2 + (j - center)**2 < radius**2:
+                        data[i, j] = intensity
+            return data
+            
+        elif input_type == 'auditory':
+            # Generate a simple waveform
+            duration = 100
+            frequency = 10 * intensity
+            time_points = np.linspace(0, 1, duration)
+            return intensity * np.sin(2 * np.pi * frequency * time_points)
+            
+        elif input_type == 'conceptual':
+            # Generate abstract concepts with varying complexity
+            concepts = {
+                'abstraction_level': intensity,
+                'complexity': np.random.uniform(0, intensity),
+                'clarity': intensity,
+                'associations': int(5 * intensity)
+            }
+            return concepts
+            
+        elif input_type == 'emotional':
+            # Generate emotional input with valence and arousal
+            emotions = {
+                'valence': np.random.uniform(-1, 1) * intensity,
+                'arousal': intensity,
+                'dominance': np.random.uniform(0, 1) * intensity
+            }
+            return emotions
+            
+        return np.random.rand(10, 10) * intensity  # fallback
 
     def _export_data(self):
         """Export system data to CSV."""

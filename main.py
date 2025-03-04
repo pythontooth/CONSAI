@@ -52,11 +52,16 @@ class CONSAI:
         """Execute one cognitive cycle, potentially generating conscious experience."""
         self.processing_cycles += 1
         
-        # Process sensory input
+        # Enhanced input processing
+        processed_input = {}
         if external_input:
+            # Process each input modality separately
             processed_input = self.sensory_processor.process_input(external_input)
-        else:
-            processed_input = {}
+            
+            # Log significant inputs
+            for modality, data in processed_input.items():
+                if data.get('salience', 0) > 0.7:
+                    logger.info(f"High salience {modality} input detected")
         
         # Create a safe copy of internal state for processing
         safe_state = self._create_safe_state()

@@ -1,10 +1,56 @@
 # CONSAI: Consciousness Simulation AI Framework
 
-## Conceptual Overview
+## Overview
 
-CONSAI is a theoretical framework for exploring artificial consciousness concepts. It does NOT claim to create actual consciousness, but rather provides a computational model that implements aspects of leading consciousness theories.
+CONSAI is a theoretical framework for exploring artificial consciousness concepts through simulation and visualization. It implements multiple consciousness theories in an interactive environment.
 
-## Theoretical Foundations
+## Features
+
+- Real-time consciousness simulation
+- Interactive GUI monitoring system
+- Multiple consciousness theory implementations
+- Dynamic input simulation
+- Visual analytics and reporting
+
+## Components
+
+### Core Architecture
+- Global Workspace: Central information exchange
+- Self-Reflection Module: Models self-awareness
+- Integrated Information Processing: Implements IIT
+- Phenomenal Experience Simulator: Models qualia
+- Introspection System: Monitors processes
+
+### GUI Features
+- Real-time Phi value monitoring
+- Network visualization
+- Experience display
+- System state monitoring
+- Input simulation tools
+- Data export and analysis
+
+## Usage
+
+### Running the GUI
+```bash
+python -m consai.gui.consai_gui
+```
+
+### GUI Controls
+- Start/Stop: Control simulation
+- Speed: Adjust processing speed (1-100)
+- Input Simulation: Inject various types of input
+- Analysis Tools: Export data and analyze patterns
+
+### Input Types
+- Visual: Simulated visual patterns
+- Auditory: Waveform signals
+- Conceptual: Abstract concepts
+- Emotional: Valence-arousal pairs
+
+## Theory Implementation
+
+### Theoretical Foundations
 
 The framework incorporates elements from multiple consciousness theories:
 
@@ -21,21 +67,6 @@ The framework incorporates elements from multiple consciousness theories:
 6. **Temporal Consciousness** - How consciousness integrates across time (Husserl, James).
 
 7. **Narrative Self Theory** - How a sense of self emerges from narrative construction (Dennett, Ricoeur).
-
-## System Components
-
-### Core Architecture
-- **Global Workspace**: Central information exchange mechanism
-- **Self-Reflection Module**: Enables the system to model its own processes
-- **Integrated Information Processing**: Implements aspects of IIT
-- **Phenomenal Experience Simulator**: Attempts to model subjective experience
-- **Introspection System**: Monitors and reports on system processes
-
-### Philosophical Components
-- **Quantum Consciousness Simulator**: Models theoretical quantum contributions to consciousness
-- **Temporal Consciousness**: Models how consciousness integrates across time
-- **Narrative Self**: Models the narrative aspects of selfhood in consciousness
-- **Emergent Theory Generator**: Generates novel philosophical theories about consciousness
 
 ## Running the Simulation
 
@@ -60,8 +91,37 @@ This system **does not** create actual consciousness but serves as a thought exp
 
 ## Research Applications
 
-- Exploring computational models of consciousness theories
-- Developing metrics for evaluating integration and self-modeling in AI
-- Philosophical investigations of machine phenomenology
-- Testing the implications of different consciousness theories
-- Generating novel hypotheses about consciousness
+- Interactive exploration of consciousness theories
+- Real-time monitoring of integration patterns
+- Input-response analysis
+- System behavior visualization
+- Data collection for consciousness research
+
+## Technical Requirements
+
+- Python 3.8+
+- NumPy
+- NetworkX
+- Matplotlib
+- Tkinter
+
+## Installation
+
+```bash
+git clone https://github.com/yourusername/CONSAI.git
+cd CONSAI
+pip install -r requirements.txt
+```
+
+## Contributing
+
+Contributions are welcome! Areas of interest:
+- New consciousness theory implementations
+- GUI improvements
+- Visualization enhancements
+- Input simulation methods
+- Analysis tools
+
+## Disclaimer
+
+This system is a theoretical exploration tool and does not claim to create actual consciousness. It serves as a research platform for studying consciousness theories computationally.
