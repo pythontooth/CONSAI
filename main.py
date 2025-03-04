@@ -8,6 +8,9 @@ from philosophy.temporal_consciousness import TemporalConsciousness
 from philosophy.quantum_consciousness import QuantumConsciousnessSimulator
 from philosophy.narrative_self import NarrativeSelf
 from philosophy.emergent_theory import EmergentTheoryGenerator
+from interaction.sensory_processor import SensoryProcessor
+from interaction.behavior_generator import BehaviorGenerator
+from learning.adaptive_learner import AdaptiveLearner
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -36,6 +39,11 @@ class CONSAI:
         self.narrative_self = NarrativeSelf()
         self.theory_generator = EmergentTheoryGenerator()
         
+        # New components
+        self.sensory_processor = SensoryProcessor()
+        self.behavior_generator = BehaviorGenerator()
+        self.adaptive_learner = AdaptiveLearner()
+        
         # System state
         self.internal_state = {"subjective_experience": None}
         self.processing_cycles = 0
@@ -44,15 +52,30 @@ class CONSAI:
         """Execute one cognitive cycle, potentially generating conscious experience."""
         self.processing_cycles += 1
         
+        # Process sensory input
+        if external_input:
+            processed_input = self.sensory_processor.process_input(external_input)
+        else:
+            processed_input = {}
+        
         # Create a safe copy of internal state for processing
         safe_state = self._create_safe_state()
         
         # Process external stimuli and internal states
-        processed_input = self.integrated_info.process(external_input, safe_state)
+        processed_info = self.integrated_info.process(processed_input, safe_state)
+        
+        # Learn from experience
+        learning_results = self.adaptive_learner.learn_from_experience(
+            processed_info)
+        
+        # Update internal state with learning results
+        self._update_internal_state({
+            "learning_results": learning_results
+        })
         
         # Process philosophical components
         temporal_exp = self.temporal_consciousness.process_temporal_experience(
-            processed_input, external_input)
+            processed_info, external_input)
         quantum_state = self.quantum_consciousness.simulate_quantum_processing(
             safe_state)
         narrative_update = self.narrative_self.integrate_experience(
@@ -72,7 +95,7 @@ class CONSAI:
                 self._update_internal_state({"current_theory": theory})
         
         # Broadcast to global workspace
-        self.global_workspace.broadcast(processed_input)
+        self.global_workspace.broadcast(processed_info)
         
         # Generate phenomenal experience model
         experience = self.phenomenal_exp.simulate_experience(
@@ -87,11 +110,23 @@ class CONSAI:
         # Allow system to introspect on its own processes
         self.introspection.monitor_cognitive_cycle(reflection)
         
+        # Generate behavior
+        behavior = self.behavior_generator.generate_behavior(
+            safe_state, processed_input)
+        
+        # Update internal state with behavior
+        self._update_internal_state({
+            "current_behavior": behavior
+        })
+        
         return reflection
 
     def _create_safe_state(self):
         """Create a safe copy of internal state without circular references."""
         safe_state = {}
+        
+        # Add processing cycles to state
+        safe_state['processing_cycles'] = self.processing_cycles
         
         # Safely copy primitive values and simple structures
         for key, value in self.internal_state.items():

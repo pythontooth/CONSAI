@@ -126,18 +126,30 @@ class EmergentTheoryGenerator:
             self.current_focus = random.choice(self.theoretical_paradigms)
             
         # If narrative is highly coherent, bias toward narrative theories
-        if (system_state.get("narrative") and 
-            isinstance(system_state["narrative"], dict) and
-            system_state["narrative"].get("narrative_coherence", 0) > 0.8):
-            if random.random() < 0.6:  # 60% chance to switch to narrative focus
-                self.current_focus = "narrative_self"
+        try:
+            narrative = system_state.get("narrative", {})
+            if isinstance(narrative, dict):
+                coherence = narrative.get("narrative_coherence", 0)
+                if isinstance(coherence, str):
+                    coherence = float(coherence)
+                if coherence > 0.8:
+                    if random.random() < 0.6:  # 60% chance to switch to narrative focus
+                        self.current_focus = "narrative_self"
+        except (ValueError, TypeError):
+            pass
                 
         # If quantum effects are strong, bias toward quantum theories
-        if (system_state.get("quantum_state") and
-            isinstance(system_state["quantum_state"], dict) and
-            system_state["quantum_state"].get("coherence", 0) > 0.7):
-            if random.random() < 0.5:  # 50% chance to switch to quantum focus
-                self.current_focus = "quantum_consciousness"
+        try:
+            quantum_state = system_state.get("quantum_state", {})
+            if isinstance(quantum_state, dict):
+                coherence = quantum_state.get("coherence", 0)
+                if isinstance(coherence, str):
+                    coherence = float(coherence)
+                if coherence > 0.7:
+                    if random.random() < 0.5:  # 50% chance to switch to quantum focus
+                        self.current_focus = "quantum_consciousness"
+        except (ValueError, TypeError):
+            pass
     
     def _generate_theory_name(self):
         """Generate a name for the new theory."""

@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -48,29 +49,46 @@ class IntrospectionSystem:
     
     def _detect_patterns(self, observation):
         """Detect recurring patterns in system behavior."""
-        # Simple pattern detection based on phi value trends
         phi = observation["phi_value"]
         cycle = observation["cycle"]
         
-        # Track phi value patterns
         if "phi_trend" not in self.pattern_detection:
             self.pattern_detection["phi_trend"] = []
         
         self.pattern_detection["phi_trend"].append(phi)
         
-        # Keep only the last 50 observations
-        if len(self.pattern_detection["phi_trend"]) > 50:
+        # Keep longer history for better analysis
+        if len(self.pattern_detection["phi_trend"]) > 100:
             self.pattern_detection["phi_trend"].pop(0)
             
-        # Detect anomalies (sudden changes)
-        if len(self.pattern_detection["phi_trend"]) >= 3:
-            prev_avg = sum(self.pattern_detection["phi_trend"][-4:-1]) / 3
-            if abs(phi - prev_avg) > 0.3:  # Significant change
+        # Much more selective anomaly detection
+        if len(self.pattern_detection["phi_trend"]) >= 20:
+            recent = self.pattern_detection["phi_trend"][-20:]
+            prev_avg = sum(recent) / len(recent)
+            std_dev = np.std(recent)
+            
+            # Only detect very significant changes (>3 standard deviations)
+            if abs(phi - prev_avg) > 3 * std_dev:
                 self.anomalies.append({
                     "cycle": cycle,
-                    "type": "phi_change",
-                    "description": f"Sudden Phi value change from {prev_avg:.2f} to {phi:.2f}"
+                    "type": "significant_phi_change",
+                    "description": f"Major shift in Phi from {prev_avg:.2f} to {phi:.2f}"
                 })
+            
+            # Only detect extremely stable periods
+            if len(recent) >= 50 and np.std(recent) < 0.01:
+                # Ensure we haven't recently reported stability
+                last_stability_report = next(
+                    (a for a in reversed(self.anomalies) 
+                     if a["type"] == "extended_stability"), 
+                    {"cycle": 0})
+                
+                if cycle - last_stability_report["cycle"] > 100:
+                    self.anomalies.append({
+                        "cycle": cycle,
+                        "type": "extended_stability",
+                        "description": "Unusually long period of Phi stability"
+                    })
     
     def _check_emergent_properties(self, observation):
         """Check for emergent system properties."""

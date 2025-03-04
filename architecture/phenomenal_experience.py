@@ -1,5 +1,7 @@
 import numpy as np
 from collections import OrderedDict
+import random
+import time
 
 class PhenomenalExperience:
     """
@@ -64,28 +66,53 @@ class PhenomenalExperience:
         
     def _process_content_to_qualia(self, content_id, content):
         """Map content to phenomenal dimensions."""
-        # This is a simplified simulation of how content might map to experience
+        # Dynamic selection of number of active categories based on cycle
+        cycle_phase = np.sin(self.processing_cycles * 0.1) if hasattr(self, 'processing_cycles') else 0
+        base_categories = 2
+        extra_categories = 1 if random.random() < (0.3 + cycle_phase * 0.2) else 0
+        num_active_categories = base_categories + extra_categories
         
-        # Conceptual processing - all content affects understanding
-        self.qualia_dimensions["conceptual"]["understanding"] += 0.5
-        self.qualia_dimensions["conceptual"]["meaning"] += np.random.uniform(0.3, 0.7)
+        # Ensure we don't always pick the same categories
+        category_weights = {
+            "visual": 0.2 + 0.1 * np.sin(time.time()),
+            "conceptual": 0.3 + 0.1 * np.cos(time.time()),
+            "emotional": 0.2 + 0.1 * np.sin(time.time() * 0.5),
+            "temporal": 0.3 + 0.1 * np.cos(time.time() * 0.5)
+        }
         
-        # Content-specific processing based on identifiers
-        if isinstance(content_id, str):
-            if "visual" in content_id:
-                self.qualia_dimensions["visual"]["color_intensity"] += 0.8
-                self.qualia_dimensions["visual"]["spatial_structure"] += 0.7
-            elif "emotion" in content_id:
-                self.qualia_dimensions["emotional"]["valence"] += np.random.uniform(-1.0, 1.0)
-                self.qualia_dimensions["emotional"]["arousal"] += np.random.uniform(0.0, 1.0)
-            elif "time" in content_id or "memory" in content_id:
-                self.qualia_dimensions["temporal"]["duration_perception"] += 0.6
-                self.qualia_dimensions["temporal"]["sequence_awareness"] += 0.8
+        # Normalize weights
+        total_weight = sum(category_weights.values())
+        category_weights = {k: v/total_weight for k, v in category_weights.items()}
         
-        # Cap values at 1.0
-        for category in self.qualia_dimensions.values():
-            for dimension in category:
-                category[dimension] = min(category[dimension], 1.0)
+        # Weighted random selection of categories
+        active_categories = random.choices(
+            list(self.qualia_dimensions.keys()),
+            weights=[category_weights[k] for k in self.qualia_dimensions.keys()],
+            k=num_active_categories
+        )
+        
+        # Process each category with varying intensities
+        for category in self.qualia_dimensions:
+            if category in active_categories:
+                # Base intensity with temporal variation
+                base_intensity = 0.4 + 0.3 * np.sin(time.time() * 0.2)
+                # Add random variation
+                intensity = base_intensity + random.uniform(-0.2, 0.2)
+                
+                # Select random number of dimensions to activate
+                num_dims = random.randint(1, len(self.qualia_dimensions[category]))
+                dimensions = random.sample(list(self.qualia_dimensions[category].keys()), k=num_dims)
+                
+                for dim in dimensions:
+                    # Add some noise to intensity
+                    dim_intensity = max(0.1, min(1.0, intensity + random.gauss(0, 0.1)))
+                    self.qualia_dimensions[category][dim] = dim_intensity
+
+        # Occasionally add a brief intense experience
+        if random.random() < 0.05:  # 5% chance
+            cat = random.choice(list(self.qualia_dimensions.keys()))
+            dim = random.choice(list(self.qualia_dimensions[cat].keys()))
+            self.qualia_dimensions[cat][dim] = random.uniform(0.9, 1.0)
     
     def _generate_experience_description(self):
         """Generate a description of the current phenomenal experience."""
